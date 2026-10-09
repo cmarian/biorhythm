@@ -1,17 +1,15 @@
 /*  ====  GLOBAL  ==== */
 :root {
-  /*  Soft pastel palette – easy on the eyes  */
-  --bg-start: #fdfdfe;      /* very light cool‑gray */
-  --bg-end:   #e0e7ff;      /* pale lavender‑blue */
-  --card-bg:  rgba(255,255,255,.85);
-  --text:     #2c3e50;
-  --primary:  #7eccab;     /* teal‑green accent */
-  --secondary:#ff6b6b;     /* gentle coral */
-  --accent:#ffe66d;        /* soft sunshine yellow */
+  --bg-start:#fdfdfe;
+  --bg-end:#e0e7ff;
+  --card-bg:rgba(255,255,255,.85);
+  --text:#2c3e50;
+  --primary:#7eccab;
+  --secondary:#ff6b6b;
+  --accent:#ffe66d;
 }
 
-/*  Body – gradient background that’s calm, not neon  */
-body {
+body{
   margin:0;
   font-family:'Montserrat',sans-serif;
   background:linear-gradient(135deg,var(--bg-start),var(--bg-end));
@@ -22,22 +20,27 @@ body {
   justify-content:center;
 }
 
-/*  ====  CARD ==== */
+/*  ====  CARD – no overflow that would clip the date picker  ==== */
 .card{
   width:92%;
   max-width:600px;
   background:var(--card-bg);
   padding:2.5rem 2rem;
   border-radius:20px;
+  /*  The box‑shadow is intentionally *outside* the clipping area  */
   box-shadow:0 20px 40px rgba(0,0,0,.1);
   position:relative;
-  overflow:hidden;
+  /*  NO overflow:hidden – let the date picker overflow when it opens  */
 }
+
+/*  Optional faint coloured overlay – keeps the “artistic” feel  */
 .card::before{
   content:'';position:absolute;inset:0;
   background:linear-gradient(135deg,var(--primary),var(--secondary));
-  opacity:.08;border-radius:20px;
+  opacity:.07;border-radius:20px;
 }
+
+/*  Header inside the card  */
 .card-header{
   text-align:center;margin-bottom:1.5rem;
 }
@@ -48,7 +51,7 @@ body {
   font-size:.9rem;color:#666;margin-top:.3rem;
 }
 
-/*  ====  FORM ==== */
+/*  ====  FORM – give the inputs real estate  ==== */
 .form-row{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -58,12 +61,25 @@ body {
   display:block;margin-bottom:.3rem;font-weight:600;color:#555;
 }
 .form-group input{
-  width:100%;padding:.6rem .8rem;border:2px solid #dfe6e9;
-  border-radius:10px;background:#fafafa;color:var(--text);
-  font-size:1rem;outline:none;transition:border-color .2s;
+  width:100%;                         /* fill the column */
+  padding:.6rem .8rem;
+  border:2px solid #dfe6e9;
+  border-radius:10px;
+  background:#fafafa;
+  color:var(--text);
+  font-family:'Montserrat',sans-serif;
+  font-size:1rem;
+  outline:none;
+  /*  Raise the z-index so any dropdown (date picker) appears on top  */
+  z-index:2;
+  /*  appearance:none removes the default arrow, we keep the calendar via type="date"  */
+  appearance:none;
 }
+
+/*  Focus style – still matches the palette  */
 .form-group input:focus{
   border-color:var(--primary);
+  background:#f4faff;
 }
 
 /*  ====  CALCULATE BUTTON ==== */
