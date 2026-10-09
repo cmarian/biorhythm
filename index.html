@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Biorhythm Calculator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <h1>Biorhythm Calculator</h1>
+
+    <section>
+      <label for="birthdate">Birth date:</label>
+      <input type="date" id="birthdate" />
+    </section>
+
+    <section>
+      <label for="range">Display range (days):
+        <input type="number" id="range" min="1" value="60">
+      </label>
+    </section>
+
+    <button id="calculate">Calculate</button>
+
+    <div id="result" hidden></div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
