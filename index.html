@@ -4,28 +4,253 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Biorhythm Calculator</title>
-  <link rel="stylesheet" href="style.css">
+
+  <!-- ---- CDN assets (free) ---- -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
+
+  <style>
+    /* ---------- Global ---------- */
+    :root {
+      --bg-start: #fdfbfb;
+      --bg-end: #e4e5e7;
+      --card-bg: #ffffff;
+      --text: #2d3436;
+      --accent-physical: #e85d3e;
+      --accent-emotional: #f5a623;
+      --accent-intellectual: #2a9d8f;
+      --critical: #d63031;
+      --border: #dfe6e9;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ---------- Card ---------- */
+    .calculator-card {
+      background: var(--card-bg);
+      width: 90%;
+      max-width: 620px;
+      padding: 2.5rem;
+      border-radius: 12px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+      margin: 1rem;
+    }
+
+    h1 { text-align: center; margin-top: 0; font-size: 1.8rem; color: var(--text); }
+    .subtitle { text-align: center; margin-bottom: 1.5rem; color: #636e72; font-size: 0.95rem; }
+
+    /* ---------- Form ---------- */
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; margin-bottom: 0.3rem; font-weight: 600; }
+    .form-group input { width: 100%; padding: 0.6rem; border: 1px solid var(--border); border-radius: 6px; font-size: 1rem; }
+    .form-group.range-input { display: flex; align-items: center; justify-content: space-between; }
+    .form-group.range-input input[type="number"] { width: 45%; }
+    .form-group.range-input span { width: 10%; text-align: center; font-weight: 600; color: var(--accent-physical); }
+
+    button.calc-btn {
+      width: 100%;
+      padding: 0.8rem;
+      margin-top: 0.5rem;
+      background: linear-gradient(135deg, var(--accent-physical), #c55030);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button.calc-btn:hover { background: linear-gradient(135deg, #c55030, var(--accent-physical)); }
+
+    /* ---------- Result / chart container ---------- */
+    #result { margin-top: 1.5rem; white-space: pre-wrap; display: none; }
+    .chart-wrapper { position: relative; height: 300px; margin-top: 1rem; }
+    .critical { fill: var(--critical); stroke: var(--critical); }
+  </style>
 </head>
 <body>
-  <main>
-    <h1>Biorhythm Calculator</h1>
+  <div class="calculator-card">
+    <h1><i class="fas fa-sine-wave"></i> Biorhythm Calculator</h1>
+    <p class="subtitle">Enter your birth date and see your physical, emotional &amp; intellectual cycles</p>
 
-    <section>
-      <label for="birthdate">Birth date:</label>
-      <input type="date" id="birthdate" />
-    </section>
+    <form id="biorhythm-form">
+      <div class="form-group">
+        <label for="birthdate">Birth date</label>
+        <input type="date" id="birthdate" required>
+      </div>
 
-    <section>
-      <label for="range">Display range (days):
-        <input type="number" id="range" min="1" value="60">
-      </label>
-    </section>
+      <div class="form-group range-input">
+        <label>Display range (days)</label>
+        <input type="number" id="range" min="1" value="90">
+        <span>days</span>
+      </div>
 
-    <button id="calculate">Calculate</button>
+      <button type="submit" class="calc-btn"><i class="fas fa-calculate"></i> Calculate</button>
+    </form>
 
-    <div id="result" hidden></div>
-  </main>
+    <div id="result"></div>
 
-  <script src="script.js"></script>
+    <div class="chart-wrapper">
+      <canvas id="biorhythmChart"></canvas>
+    </div>
+  </div>
+
+  <script>
+    // ---------- Helpers ----------
+    function sinCycle(days, period) {
+      return Math.sin((2 * Math.PI * days) / period);
+    }
+
+    function daysSinceBirth(birthDate) {
+      const today = new Date();
+      const birth = new Date(birthDate);
+      const diffMs = Math.abs(today - birth);
+      return Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    }
+
+    function computeCycles(birthDate, rangeDays) {
+      const todayOffset = daysSinceBirth(birthDate);
+      const data = [];
+      for (let i = -rangeDays; i <= rangeDays; i++) {
+        const day = todayOffset + i;
+        data.push({
+          day,
+          physical: sinCycle(day, 23),
+          emotional: sinCycle(day, 28),
+          intellectual: sinCycle(day, 33)
+        });
+      }
+      return data;
+    }
+
+    function findCriticalDays(data) {
+      const critical = [];
+      for (let i = 1; i < data.length; i++) {
+        const prev = data[i - 1];
+        const cur = data[i];
+        // physical zero‑crossing
+        if ((prev.physical >= 0 && cur.physical < 0) ||
+            (prev.physical <= 0 && cur.physical > 0))
+          critical.push({ day: cur.day, type: 'physical' });
+        // emotional zero‑crossing
+        if ((prev.emotional >= 0 && cur.emotional < 0) ||
+            (prev.emotional <= 0 && cur.emotional > 0))
+          critical.push({ day: cur.day, type: 'emotional' });
+        // intellectual zero‑crossing
+        if ((prev.intellectual >= 0 && cur.intellectual < 0) ||
+            (prev.intellectual <= 0 && cur.intellectual > 0))
+          critical.push({ day: cur.day, type: 'intellectual' });
+      }
+      return critical;
+    }
+
+    // ---------- Render chart ----------
+    function renderChart(data) {
+      const ctx = document.getElementById('biorhythmChart').getContext('2d');
+
+      // extract values for the three cycles
+      const days = data.map(d => d.day);
+      const physical = data.map(d => d.physical);
+      const emotional = data.map(d => d.emotional);
+      const intellectual = data.map(d => d.intellectual);
+
+      // determine min / max for y‑axis (a little padding)
+      const allVals = [...physical, ...emotional, ...intellectual];
+      const min = Math.min(...allVals) - 0.1;
+      const max = Math.max(...allVals) + 0.1;
+
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: days,
+          datasets: [
+            {
+              label: 'Physical (23 d)',
+              data: physical,
+              borderColor: '--accent-physical',
+              backgroundColor: 'rgba(232,93,62,0.1)',
+              tension: 0.3,
+              fill: true
+            },
+            {
+              label: 'Emotional (28 d)',
+              data: emotional,
+              borderColor: '--accent-emotional',
+              backgroundColor: 'rgba(245,166,35,0.1)',
+              tension: 0.3,
+              fill: true
+            },
+            {
+              label: 'Intellectual (33 d)',
+              data: intellectual,
+              borderColor: '--accent-intellectual',
+              backgroundColor: 'rgba(42,157,143,0.1)',
+              tension: 0.3,
+              fill: true
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          hover: { mode: 'index' },
+          scales: {
+            y: { min, max, display: true, title: { display: true, text: 'Cycle value' }, ticks: { stepSize: 0.2 } },
+            x: { title: { display: true, text: 'Days relative to today' } }
+          },
+          plugins: {
+            title: {
+              display: true,
+              text: 'Biorhythm Cycles',
+              font: { size: 16 }
+            }
+          }
+        }
+      });
+    }
+
+    // ---------- UI interaction ----------
+    document.getElementById('biorhythm-form').addEventListener('submit', async e => {
+      e.preventDefault();
+
+      const birth = document.getElementById('birthdate').value;
+      const range = parseInt(document.getElementById('range').value, 10) || 90;
+      if (!birth) { alert('Please select a birth date.'); return; }
+
+      const cycles = computeCycles(birth, range);
+      const critical = findCriticalDays(cycles);
+
+      // ------- Populate text result -------
+      const todayEntry = cycles.find(d => d.day === 0);
+      const todayPct = [
+        `Physical: ${Math.round((todayEntry.physical + 1) * 50)}%`,
+        `Emotional: ${Math.round((todayEntry.emotional + 1) * 50)}%`,
+        `Intellectual: ${Math.round((todayEntry.intellectual + 1) * 50)}%`
+      ].join('<br>');
+
+      document.getElementById('result').innerHTML = todayPct;
+      document.getElementById('result').style.display = 'block';
+
+      // ------- Draw chart -------
+      renderChart(cycles);
+
+      // ------- Highlight critical days on the chart (optional) -------
+      // Chart.js does not let us add extra datasets after creation easily,
+      // so we just log them for now.
+      if (critical.length) {
+        console.log('Critical days detected:', critical);
+      }
+    });
+  </script>
 </body>
 </html>
