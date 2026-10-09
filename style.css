@@ -1,27 +1,96 @@
-/* style.css – same variables as in the HTML version */
+/*  ====  GLOBAL  ==== */
 :root {
-  --bg-start: #fdfbfb;
-  --bg-end: #e4e5e7;
-  --card-bg: #ffffff;
-  --text: #2d3436;
-  --accent-physical: #e85d3e;
-  --accent-emotional: #f5a623;
-  --accent-intellectual: #2a9d8f;
-  --critical: #d63031;
-  --border: #dfe6e9;
+  --bg-start: #fffdde;      /* pale yellow‑cream */
+  --bg-end:   #febf04;      /* bright amber */
+  --card-bg:  rgba(255,255,255,.85);
+  --text:     #212529;
+  --primary:  #e91e63;      /* hot pink */
+  --secondary:#ff9800;      /* orange */
+  --accent:#ffc107;         /* yellow */
 }
-body { font-family: 'Inter',sans-serif; margin:0; background:linear-gradient(135deg,var(--bg-start),var(--bg-end)); color:var(--text); min-height:100vh; display:flex; align-items:center; justify-content:center; }
-.calculator-card { background:var(--card-bg); width:90%; max-width:620px; padding:2.5rem; border-radius:12px; box-shadow:0 12px 30px rgba(0,0,0,0.1); margin:1rem; }
-h1 { text-align:center; margin-top:0; font-size:1.8rem; color:var(--text); }
-.subtitle { text-align:center; margin-bottom:1.5rem; color:#636e72; font-size:0.95rem; }
-.form-group { margin-bottom:1rem; }
-.form-group label { display:block; margin-bottom:0.3rem; font-weight:600; }
-.form-group input { width:100%; padding:0.6rem; border:1px solid var(--border); border-radius:6px; font-size:1rem; }
-.form-group.range-input { display:flex; align-items:center; justify-content:space-between; }
-.form-group.range-input input[type="number"] { width:45%; }
-.form-group.range-input span { width:10%; text-align:center; font-weight:600; color:var(--accent-physical); }
-button.calc-btn { width:100%; padding:0.8rem; margin-top:0.5rem; background:linear-gradient(135deg,var(--accent-physical),#c55030); color:white; border:none; border-radius:6px; font-size:1rem; font-weight:600; cursor:pointer; transition:background 0.2s; }
-button.calc-btn:hover { background:linear-gradient(135deg,#c55030,var(--accent-physical)); }
-#result { margin-top:1.5rem; white-space:pre-wrap; display:none; }
-.chart-wrapper { position:relative; height:300px; margin-top:1rem; }
-.critical { fill:var(--critical); stroke:var(--critical); }
+
+/*  Body – gradient background that’s easy on the eyes */
+body {
+  margin:0;
+  font-family:'Baloo 2',sans-serif;
+  background:linear-gradient(135deg,var(--bg-start),var(--bg-end));
+  color:var(--text);
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/*  ====  CARD ==== */
+.card{
+  width:90%;
+  max-width:420px;
+  background:var(--card-bg);
+  padding:2rem 1.5rem;
+  border-radius:16px;
+  box-shadow:0 12px 30px rgba(0,0,0,.15);
+  position:relative;
+  overflow:hidden;
+}
+.card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  opacity:.12;border-radius:16px;
+}
+.card-header{
+  text-align:center;margin-bottom:1.2rem;
+}
+.card-header h1{
+  margin:0;font-size:1.8rem;color:var(--primary);
+}
+.card-header .card-sub{
+  font-size:.9rem;color:#666;margin-top:.3rem;
+}
+
+/*  ====  FORM ==== */
+.form-row{
+  display:grid;grid-template-columns:1fr 1fr;gap .8rem;margin-bottom:.8rem;
+}
+.form-group label{display:block;margin-bottom:.3rem;font-weight:700;color:#555;}
+.form-group input{
+  width:100%;padding:.6rem .8rem;border:2px solid #e0e0e0;
+  border-radius:10px;background:#fff;color:var(--text);
+  font-size:1rem;outline:none;
+}
+.form-group input:focus{border-color:var(--primary);}
+
+/*  ====  CALCULATE BUTTON ==== */
+.calc-btn{
+  width:100%;padding:.8rem;margin-top:.4rem;
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  color:#fff;border:none;border-radius:10px;
+  font-family:'Baloo 2',sans-serif;font-size:1rem;font-weight:700;
+  letter-spacing:1px;cursor:pointer;transition:transform .2s,box-shadow .2s;
+}
+.calc-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 0 20px rgba(233,30,99,.4);
+}
+.calc-btn:active{transform:translateY(1px);}
+
+/*  ====  RESULT TILES ==== */
+.result-tiles{
+  margin-top:1.5rem;display:grid;grid-template-columns:1fr 1fr 1fr;
+  gap .5rem;}
+.tile{
+  background:rgba(255,255,255,.7);
+  border-radius:12px;padding:.8rem 0.6rem;
+  text-align:center;min-height:80px;display:flex;
+  flex-direction:column;justify-content:center;}
+.tile i{
+  font-size:2rem;margin-bottom:.3rem;}
+.tile .pct{
+  font-size:1.4rem;font-weight:700;color:var(--primary);}
+.tile .name{
+  font-size:.85rem;color:#777;margin-top:.1rem;
+}
+
+/*  Reduce motion for accessibility  */
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;transition-duration:.01ms!important;}
+}
