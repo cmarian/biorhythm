@@ -9,7 +9,8 @@
   --accent:#ffe66d;
 }
 
-body{
+/*  Body – calm gradient background  */
+body {
   margin:0;
   font-family:'Montserrat',sans-serif;
   background:linear-gradient(135deg,var(--bg-start),var(--bg-end));
@@ -20,106 +21,40 @@ body{
   justify-content:center;
 }
 
-/*  ====  CARD – no overflow that would clip the date picker  ==== */
+/*  Card – no overflow that clips the inputs  */
 .card{
   width:92%;
   max-width:600px;
   background:var(--card-bg);
   padding:2.5rem 2rem;
   border-radius:20px;
-  /*  The box‑shadow is intentionally *outside* the clipping area  */
   box-shadow:0 20px 40px rgba(0,0,0,.1);
   position:relative;
-  /*  NO overflow:hidden – let the date picker overflow when it opens  */
 }
 
-/*  Optional faint coloured overlay – keeps the “artistic” feel  */
-.card::before{
-  content:'';position:absolute;inset:0;
+/*  FORM elements  */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap .8rem;margin-bottom:.8rem;}
+.form-group label{display:block;margin-bottom:.3rem;font-weight:600;color:#555;}
+.form-group input{width:100%;padding:.6rem .8rem;border:2px solid #dfe6e9;
+  border-radius:10px;background:#fafafa;color:var(--text);
+  font-family:'Montserrat',sans-serif;font-size:1rem;outline:none;z-index:2;appearance:none;}
+.form-group input:focus{border-color:var(--primary);background:#f4faff;}
+
+/*  CALCULATE BUTTON  */
+.calc-btn{width:100%;padding:.8rem;margin-top:.4rem;
   background:linear-gradient(135deg,var(--primary),var(--secondary));
-  opacity:.07;border-radius:20px;
-}
-
-/*  Header inside the card  */
-.card-header{
-  text-align:center;margin-bottom:1.5rem;
-}
-.card-header h1{
-  margin:0;font-size:1.8rem;color:var(--primary);
-}
-.card-header .card-sub{
-  font-size:.9rem;color:#666;margin-top:.3rem;
-}
-
-/*  ====  FORM – give the inputs real estate  ==== */
-.form-row{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap .8rem;margin-bottom:.8rem;
-}
-.form-group label{
-  display:block;margin-bottom:.3rem;font-weight:600;color:#555;
-}
-.form-group input{
-  width:100%;                         /* fill the column */
-  padding:.6rem .8rem;
-  border:2px solid #dfe6e9;
-  border-radius:10px;
-  background:#fafafa;
-  color:var(--text);
-  font-family:'Montserrat',sans-serif;
-  font-size:1rem;
-  outline:none;
-  /*  Raise the z-index so any dropdown (date picker) appears on top  */
-  z-index:2;
-  /*  appearance:none removes the default arrow, we keep the calendar via type="date"  */
-  appearance:none;
-}
-
-/*  Focus style – still matches the palette  */
-.form-group input:focus{
-  border-color:var(--primary);
-  background:#f4faff;
-}
-
-/*  ====  CALCULATE BUTTON ==== */
-.calc-btn{
-  width:100%;padding:.8rem;margin-top:.4rem;
-  background:linear-gradient(135deg,var(--primary),var(--secondary));
-  color:#fff;border:none;border-radius:10px;
-  font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:600;
-  letter-spacing:1px;cursor:pointer;transition:transform .2s,box-shadow .2s;
-}
-.calc-btn:hover{
-  transform:translateY(-2px);
-  box-shadow:0 0 20px rgba(126,204,171,.4);
-}
+  color:#fff;border:none;border-radius:10px;font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:600;
+  letter-spacing:1px;cursor:pointer;transition:transform .2s,box-shadow .2s;}
+.calc-btn:hover{transform:translateY(-2px);box-shadow:0 0 20px rgba(126,204,171,.4);}
 .calc-btn:active{transform:translateY(1px);}
 
-/*  ====  RESULT TILES ==== */
-.result-tiles{
-  margin-top:1.5rem;display:grid;grid-template-columns:1fr 1fr 1fr;
-  gap .5rem;}
-.tile{
-  background:rgba(255,255,255,.7);
-  border-radius:12px;padding:.8rem 0.6rem;
-  text-align:center;min-height:80px;display:flex;
-  flex-direction:column;justify-content:center;}
-.tile i{
-  font-size:2rem;margin-bottom:.3rem;}
-.tile .pct{
-  font-size:1.4rem;font-weight:600;color:var(--primary);}
-.tile .name{
-  font-size:.85rem;color:#777;margin-top:.1rem;
-}
+/*  RESULT TILES  */
+.result-tiles{margin-top:1.5rem;display:grid;grid-template-columns:1fr 1fr 1fr;gap .5rem;}
+.tile{background:rgba(255,255,255,.7);border-radius:12px;padding:.8rem 0.6rem;
+  text-align:center;min-height:80px;display:flex;flex-direction:column;justify-content:center;}
+.tile i{font-size:2rem;margin-bottom:.3rem;}
+.tile .pct{font-size:1.4rem;font-weight:600;color:var(--primary);}
+.tile .name{font-size:.85rem;color:#777;margin-top:.1rem;}
 
-/*  ====  CHART WRAPPER ==== */
-.chart-wrapper{
-  margin-top:2rem;position:relative;}
-canvas{
-  display:block;margin:0 auto;}
-
-/*  Reduce motion for accessibility  */
-@media (prefers-reduced-motion:reduce){
-  *{animation-duration:.01ms!important;transition-duration:.01ms!important;}
-}
+/*  Accessibility  */
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
