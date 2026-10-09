@@ -1,31 +1,27 @@
-/* Biorhythm Calculator – minimal styling */
-
-body {
-  font-family: system-ui, sans-serif;
-  max-width: 600px;
-  margin: 2rem auto;
-  padding: 1rem;
-  line-height: 1.5;
+/* style.css – same variables as in the HTML version */
+:root {
+  --bg-start: #fdfbfb;
+  --bg-end: #e4e5e7;
+  --card-bg: #ffffff;
+  --text: #2d3436;
+  --accent-physical: #e85d3e;
+  --accent-emotional: #f5a623;
+  --accent-intellectual: #2a9d8f;
+  --critical: #d63031;
+  --border: #dfe6e9;
 }
-
-main { border: 1px solid #ddd; padding: 1.5rem; border-radius: 8px; }
-
-input, button {
-  padding: 0.5rem;
-  font-size: 1rem;
-}
-
-button {
-  background: #0066cc;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-button:hover { background: #0052a3; }
-
-#result {
-  margin-top: 1rem;
-  white-space: pre-wrap;
-}
+body { font-family: 'Inter',sans-serif; margin:0; background:linear-gradient(135deg,var(--bg-start),var(--bg-end)); color:var(--text); min-height:100vh; display:flex; align-items:center; justify-content:center; }
+.calculator-card { background:var(--card-bg); width:90%; max-width:620px; padding:2.5rem; border-radius:12px; box-shadow:0 12px 30px rgba(0,0,0,0.1); margin:1rem; }
+h1 { text-align:center; margin-top:0; font-size:1.8rem; color:var(--text); }
+.subtitle { text-align:center; margin-bottom:1.5rem; color:#636e72; font-size:0.95rem; }
+.form-group { margin-bottom:1rem; }
+.form-group label { display:block; margin-bottom:0.3rem; font-weight:600; }
+.form-group input { width:100%; padding:0.6rem; border:1px solid var(--border); border-radius:6px; font-size:1rem; }
+.form-group.range-input { display:flex; align-items:center; justify-content:space-between; }
+.form-group.range-input input[type="number"] { width:45%; }
+.form-group.range-input span { width:10%; text-align:center; font-weight:600; color:var(--accent-physical); }
+button.calc-btn { width:100%; padding:0.8rem; margin-top:0.5rem; background:linear-gradient(135deg,var(--accent-physical),#c55030); color:white; border:none; border-radius:6px; font-size:1rem; font-weight:600; cursor:pointer; transition:background 0.2s; }
+button.calc-btn:hover { background:linear-gradient(135deg,#c55030,var(--accent-physical)); }
+#result { margin-top:1.5rem; white-space:pre-wrap; display:none; }
+.chart-wrapper { position:relative; height:300px; margin-top:1rem; }
+.critical { fill:var(--critical); stroke:var(--critical); }
