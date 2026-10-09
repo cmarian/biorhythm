@@ -25,10 +25,72 @@ function computeCycles(birthDate, rangeDays) {
   return data;
 }
 
-/*  ====  Helper: map sine value (-1→+1) to a 0‑100 %  ==== */
+/*  Helper: map sine (‑1…+1) to a 0‑100 % value  */
 function cyclePct(value) {
-  // value∈[-1,1] → 0‑100%
   return Math.round(((value + 1) / 2) * 100);
+}
+
+/*  ====  CHART.JS RENDERER  ==== */
+function renderChart(data) {
+  const ctx = document.getElementById('biorhythmChart').getContext('2d');
+  const days = data.map(d => d.day);
+  const physical = data.map(d => d.physical);
+  const emotional = data.map(d => d.emotional);
+  const intellectual = data.map(d => d.intellectual);
+
+  const min = Math.min(...physical, ...emotional, ...intellectual) - 0.2;
+  const max = Math.max(...physical, ...emotional, ...intellectual) + 0.2;
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: days,
+      datasets: [
+        {
+          label: 'Physical (23 d)',
+          data: physical,
+          borderColor: '#7eccab',
+          backgroundColor: 'rgba(126,204,171,0.15)',
+          tension: 0.3,
+          fill: true
+        },
+        {
+          label: 'Emotional (28 d)',
+          data: emotional,
+          borderColor: '#ff6b6b',
+          backgroundColor: 'rgba(251,107,107,0.15)',
+          tension: 0.3,
+          fill: true
+        },
+        {
+          label: 'Intellectual (33 d)',
+          data: intellectual,
+          borderColor: '#ffe66d',
+          backgroundColor: 'rgba(255,230,109,0.15)',
+          tension: 0.3,
+          fill: true
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      hover: { mode: 'index' },
+      scales: {
+        y: { min, max, display: true,
+             title: { display: true, text: 'Cycle value' },
+             ticks: { stepSize: 0.2 } },
+        x: { title: { display: true, text: 'Days relative to today' } }
+      },
+      plugins: {
+        title: {
+          display: true,
+          text: 'Biorhythm Cycles',
+          font: { size: 16 }
+        }
+      }
+    }
+  });
 }
 
 /*  ====  UI HANDLER – form submit  ==== */
@@ -36,19 +98,16 @@ document.getElementById('biorhythm-form').addEventListener('submit', e => {
   e.preventDefault();
 
   const birth = document.getElementById('birthdate').value;
-  const range = parseInt(document.getElementById('range').value, 10) || 60;
+  const range = parseInt(document.getElementById('range').value, 10) || 90;
   if (!birth) { alert('Pick a birth date.'); return; }
 
   const cycles = computeCycles(birth, range);
 
-  // Take the entry that corresponds to “today” (day 0 in the array)
+  // -------  Today’s entry (day 0)  -------
   const today = cycles.find(d => d.day === 0);
-  if (!today) {
-    // fallback: just use the first entry (should rarely happen)
-    today = cycles[0];
-  }
+  if (!today) today = cycles[0]; // fallback (should rarely happen)
 
-  // -------  Fill the three tiles  -------
+  // -------  Fill the three percentage tiles  -------
   const tiles = document.querySelectorAll('.tile');
   tiles[0].querySelector('.pct').textContent = `${cyclePct(today.physical)}%`;
   tiles[0].querySelector('.name').textContent = 'Physical';
@@ -59,45 +118,39 @@ document.getElementById('biorhythm-form').addEventListener('submit', e => {
   tiles[2].querySelector('.pct').textContent = `${cyclePct(today.intellectual)}%`;
   tiles[2].querySelector('.name').textContent = 'Intellectual';
 
-  // optional: tiny confetti burst (pure CSS, no library)
-  burstConfetti();
+  // -------  Render the sine‑wave chart  -------
+  renderChart(cycles);
 });
 
-/*  ====  Very tiny confetti effect (no external lib)  ==== */
+/*  OPTIONAL: a tiny confetti burst after each calculate click  */
 function burstConfetti() {
-  const colors = ['#e91e63','#ff9800','#ffc107','#00d2d3','#4facfe'];
+  const colors = ['#7eccab','#ff6b6b','#ffe66d'];
   const container = document.createElement('div');
-  container.style.position = 'fixed';
-  container.style.top = '0'; container.style.left = '0';
-  container.style.width = '100%'; container.style.height = '100%';
-  container.style.pointerEvents = 'none';
-  container.style.zIndex = '9999';
+  container.style.cssText = `
+    position:fixed;top:0;left:0;width:100%;height:100%;
+    pointer-events:none;z-index:9999;
+  `;
   document.body.appendChild(container);
 
   const pieces = 30;
   for (let i = 0; i < pieces; i++) {
-    const piece = document.createElement('div');
-    piece.style.position = 'absolute';
-    piece.style.width = piece.style.height = '10px';
-    piece.style.background = colors[Math.random()*colors.length|0];
-    piece.style.borderRadius = i%2 ? '2px' : '50%'; // mix squares & circles
-    piece.style.left = (Math.random()*100)+'%';
-    piece.style.top = '-10px';
-    piece.style.opacity = '1';
-    piece.style.animation = 'confettiFall 1.2s ease-out forwards';
-    container.appendChild(piece);
+    const p = document.createElement('div');
+    p.style.cssText = `
+      position:absolute;width:10px;height:10px;
+      background:${colors[Math.random()*3|0];
+      };border-radius:${i%2?'2px':'50%'};
+      left:${Math.random()*100}%;top:-10px;
+      opacity:1;animation:confettiFall 1.2s ease-out forwards;
+    `;
+    container.appendChild(p);
   }
-
-  // remove after animation
-  setTimeout(() => { container.remove(); }, 1300);
+  setTimeout(() => container.remove(), 1300);
 }
-
-/*  Add the keyframe for the confetti (inject once) */
 const style = document.createElement('style');
 style.textContent = `
   @keyframes confettiFall{
-    0%   {transform:translateY(-10px) rotate(0deg);opacity:1;}
-    100% {transform:translateY(130vh) rotate(360deg);opacity:0;}
+    0%   {transform:translateY(-10px)rotate(0deg);opacity:1;}
+    100% {transform:translateY(130vh)rotate(360deg);opacity:0;}
   }
 `;
 document.head.appendChild(style);
