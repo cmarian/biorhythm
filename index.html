@@ -2,47 +2,56 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Biorhythm ⋆⋆</title>
+  <title>Biorhythm</title>
 
-  <!--  Google‑font (fun & round)  -->
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700&display=swap"
+  <!--  Google‑font (soft, rounded)  -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap"
         rel="stylesheet">
 
-  <!--  Font‑Awesome for tiny icons  -->
+  <!--  Font‑Awesome icons  -->
   <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!--  Chart.js for the sine‑wave graph  -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
 
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!--  ====  CENTERED CARD ==== -->
+  <!--  ====  CENTRAL CARD ==== -->
   <main class="card">
     <header class="card-header">
-      <h1><i class="fas fa‑smile-wink"></i> Biorhythm</h1>
-      <p class="card-sub">Your day‑by‑day colour‑coded vibe</p>
+      <h1><i class="fas fa‑gem"></i> Biorhythm</h1>
+      <p class="card-sub">Physical • Emotional • Intellectual</p>
     </header>
 
     <section class="card-body">
       <form id="biorhythm-form">
         <div class="form-row">
           <div class="form-group">
-            <label for="birthdate"><i class="fas fa‑calendar-day"></i> Birth date</label>
+            <label for="birthdate"><i class="fas fa‑calendar-alt"></i> Birth date</label>
+            <!-- native date picker – works with mouse & keyboard -->
             <input type="date" id="birthdate" required>
           </div>
 
           <div class="form-group">
-            <label for="range"><i class="fas fa‑slider-horizontal"></i> Days to show</label>
-            <input type="number" id="range" min="1" value="60">
+            <label for="range"><i class="fas fa‑slider"></i> Days to show</label>
+            <input type="number" id="range" min="1" value="90">
           </div>
         </div>
 
-        <button type="submit" class="calc-btn"><i class="fas fa‑calculate"></i> GO!</button>
+        <button type="submit" class="calc-btn"><i class="fas fa‑calculate"></i> GO</button>
       </form>
     </section>
 
-    <!--  Result area – three big tiles  -->
+    <!--  Result tiles (appear after “GO”)  -->
     <div id="result" class="result-tiles"></div>
+
+    <!--  Chart canvas – the “star” of the page  -->
+    <section class="chart-wrapper">
+      <canvas id="biorhythmChart"></canvas>
+    </section>
   </main>
 
   <script src="script.js"></script>
