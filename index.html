@@ -2,261 +2,30 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Biorhythm — History & Calculator</title>
-
-<!-- Fonts -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
-
-<!-- SEO / Social -->
-<meta name="description"
-      content="Calculate your physical, emotional and intellectual biorhythm cycles. Discover the history of the theory and get a fun personal insight.">
-<meta name="keywords" content="biorhythm, physical, emotional, intellectual, calculator, fun">
-<link rel="canonical" href="https://cmarian.github.io/biorhythm/">
-<meta property="og:title" content="Biorhythm — Calculate Your Cycles">
-<meta property="og:description"
-      content="Enter your birthdate and see your physical, emotional, and intellectual biorhythm cycles graphed across time.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://cmarian.github.io/biorhythm/">
-<meta property="og:image" content="https://cmarian.github.io/biorhythm/logo.png">
-<meta property="og:locale" content="en">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Biorhythm — Calculate Your Cycles">
-<meta name="twitter:description"
-      content="Enter your birthdate and see your physical, emotional, and intellectual biorhythm cycles graphed across time.">
-<meta name="twitter:image" content="https://cmarian.github.io/biorhythm/logo.png">
-
-<style>
-/* Root variables & base reset */
-:root{
-  --bg:#fdfdfd;
-  --fg:#111;
-  --muted:#666;
-  --accent:#d64045;
-  --soft:#ffe66d;
-  --card:#ffffff;
-  --border:#e0e0e0;
-  --primary:#2a9d8f;
-  --secondary:#ffe66d;
-  --bg-dark:#2c3e50;
-  --fg-dark:#ecf0f1;
-  --card-dark:#34495e;
-  --border-dark:#2c3e50;
-}
-* {box-sizing:border-box;margin:0;padding:0;font-family:'Montserrat',sans-serif;}
-html{scroll-behavior:smooth;}
-body{
-  background:var(--bg);
-  color:var(--fg);
-  min-height:100vh;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  padding:2rem;
-  transition:background .3s, color .3s;
-}
-html.dark{--bg:#2c3e50;--fg:#ecf0f1;--muted:#bdc3c7;--accent:#ff7b5b;--soft:#f5b64e;--card:#34495e;--border:#2c3e50;--primary:#1abc9c;--secondary:#f5b64e;}
-h1{font-family:'Playfair Display',serif;font-size:2.8rem;margin-bottom:.5rem;}
-h2{font-family:'Playfair Display',serif;font-size:1.8rem;margin:2rem 0 1rem;}
-p{max-width:720px;margin:0 0 1.5rem;line-height:1.6;}
-a{color:var(--accent);text-decoration:underline;}
-a:hover{color:#c83338;}
-
-header{text-align:center;margin-bottom:3rem;}
-header .moon{
-  position:absolute;top:1rem;right:1rem;
-  background:none;border:none;color:var(--muted);font-size:1rem;cursor:pointer;
-  aria-label="Toggle dark mode";
-}
-.main{max-width:960px;width:100%;}
-
-/* Card */
-.card{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:12px;
-  padding:2rem 2.5rem;
-  margin-bottom:2rem;
-  box-shadow:0 8px 24px rgba(0,0,0,.08);
-  opacity:0;
-  transition:opacity .6s ease;
-}
-html.dark .card{border-color:#37474f;}
-.card.hint{opacity:1;}
-.history-list{margin:1rem 0 1rem 1.5rem;}
-.history-list li{margin-bottom:.4rem;}
-
-/* Calculator form */
-.calc-form{display:grid;gap:1rem;margin-bottom:1.5rem;}
-.calc-form .form-row{display:grid;grid-template-columns:1fr 1fr;gap .8rem;}
-.calc-form label{display:block;margin-bottom:.3rem;font-weight:600;color:#555;}
-.calc-form input{
-  width:100%;padding:.6rem .8rem;border:2px solid #dfe6e9;border-radius:10px;background:#fafafa;color:var(--text);font-family:'Montserrat',sans-serif;font-size:1rem;outline:none;appearance:none;
-}
-.calc-form input:focus{border-color:var(--primary);background:#f4faff;}
-/* Button */
-.calc-btn{
-  width:100%;padding:.8rem;margin-top:.4rem;
-  background:linear-gradient(135deg,var(--primary),var(--secondary));
-  color:#fff;border:none;border-radius:10px;font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:600;letter-spacing:1px;cursor:pointer;transition:transform .2s,box-shadow .2s;
-}
-.calc-btn:hover{transform:translateY(-2px);box-shadow:0 0 20px rgba(42,157,143,.4);}
-.calc-btn:active{transform:translateY(1px);}
-
-/* Result tiles */
-.result-tiles{margin-top:1.5rem;display:grid;grid-template-columns:1fr 1fr 1fr;gap .5rem;}
-.tile{
-  background:rgba(255,255,255,.7);
-  border-radius:12px;padding:.8rem 0.6rem;
-  text-align:center;min-height:80px;display:flex;flex-direction:column;justify-content:center;
-}
-.tile .pct{font-size:1.4rem;font-weight:600;color:var(--accent);}
-.tile .name{font-size:.85rem;color:#777;margin-top:.1rem;}
-
-/* Reduced motion */
-@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
-</style>
+<title>Biorhythm – test</title>
 </head>
 <body>
-
-<header>
-  <h1>Biorhythm</h1>
-  <p>Explore the history and calculate your personal cycles</p>
-  <button class="moon" aria-label="Toggle dark mode">🌙</button>
-</header>
-
-<main class="main">
-  <!-- History -->
-  <section class="card" id="historySection">
-    <h2>History of Biorhythm Theory</h2>
-    <p>The biorhythm theory originated in the late 19th century, proposing that human life is governed by innate biological cycles that begin at birth. Although later considered pseudoscience, it remains a popular tool for personal reflection.</p>
-    <ul class="history-list">
-      <li><strong>1897:</strong> Austrian physician <strong>Wilhelm Fliess</strong> proposes the 23‑day, 28‑day and 33‑day cycles.</li>
-      <li><strong>Early 1900s:</strong> The idea spreads through magazines, novels and public fascination.</li>
-      <li><strong>1970‑1990s:</strong> Peaks in self‑help and sports performance, later debunked by scientific studies.</li>
-      <li><strong>Today:</strong> Used mainly for introspection, curiosity and occasional novelty.</li>
-    </ul>
-  </section>
-
-  <!-- Calculator -->
-  <section class="card" id="calcSection">
-    <h2>Calculate Your Cycles</h2>
-    <p>Enter your birthdate and a range of days to see your physical, emotional and intellectual cycles.</p>
-
-    <form class="calc-form" id="biorhythm-form">
-      <div class="form-row">
-        <div class="form-group">
-          <label for="birthdate">Birth date</label>
-          <input type="date" id="birthdate" name="birthdate" required>
-        </div>
-        <div class="form-group">
-          <label for="range">Days to show</label>
-          <input type="number" id="range" name="range" min="1" value="90">
-        </div>
-      </div>
-      <button type="submit" class="calc-btn">Go</button>
-    </form>
-
-    <div class="result-tiles" id="result" style="margin-top:1.5rem;">
-      <!-- tiles filled by JS -->
-    </div>
-  </section>
-</main>
-
+<h1>Biorhythm</h1>
+<form>
+  <label for="birth">Birth date:</label>
+  <input type="date" id="birth" name="birth">
+  <br><br>
+  <label for="range">Days to show:</label>
+  <input type="number" id="range" name="range" min="1" value="90">
+  <br><br>
+  <button type="submit">Go</button>
+</form>
+<p>Result will appear here: <span id="result"></span></p>
 <footer>
-  &copy; 2026 Biorhythm • For entertainment and reflection only
+  &copy; 2026 test biorhythm
 </footer>
-
-<!-- Dark‑mode toggle (localStorage) -->
 <script>
-(function(){
-  const html = document.documentElement;
-  const moon = document.querySelector('.moon');
-  if(window.matchMedia('(prefers-color-scheme: dark)').matches){
-    html.classList.add('dark');
-  }
-  if(moon){
-    moon.addEventListener('click',()=>{
-      html.classList.toggle('dark');
-      localStorage.setItem('theme',html.classList.contains('dark')?'dark':'light');
-    });
-  }
-})();
-</script>
-
-<!-- Calculation & UI handler -->
-<script>
-/* basic biorhythm math */
-function sinCycle(days, period){
-  return Math.sin(2*Math.PI*days/period);
-}
-function daysSinceBirth(birthDate){
-  const today = new Date();
-  const birth = new Date(birthDate);
-  return Math.floor(Math.abs(today-birth)/(1000*60*60*24));
-}
-function computeCycles(birthDate, rangeDays){
-  const todayOffset = daysSinceBirth(birthDate);
-  const data = [];
-  for(let i=-rangeDays;i<=rangeDays;i++){
-    const day = todayOffset + i;
-    data.push({
-      day,
-      physical: sinCycle(day,23),
-      emotional: sinCycle(day,28),
-      intellectual: sinCycle(day,33)
-    });
-  }
-  return data;
-}
-function pct(value){
-  return Math.round(((value+1)/2)*100);
-}
-
-/* UI handler – form submit */
-document.getElementById('biorhythm-form').addEventListener('submit',function(e){
+document.querySelector('form').addEventListener('submit',function(e){
   e.preventDefault();
-  const birth = document.getElementById('birthdate').value.trim();
-  const range = parseInt(document.getElementById('range').value,10)||90;
-
-  if(!birth||!/^\d{4}-\d{2}-\d{2}$/.test(birth)){
-    alert('Enter a valid date in YYYY‑MM‑DD format.');
-    return;
-  }
-  if(range<1){
-    alert('Days to show must be at least 1.');
-    return;
-  }
-
-  const cycles = computeCycles(birth,range);
-  const today = cycles.find(d=>d.day===0)||cycles[0];
-
-  const pPhysical = pct(today.physical);
-  const pEmotional = pct(today.emotional);
-  const pIntellectual = pct(today.intellectual);
-
-  const out = document.getElementById('result');
-  out.innerHTML = `
-    <div class="tile"><div class="pct">${pPhysical}%</div>Physical</div>
-    <div class="tile"><div class="pct">${pEmotional}%</div>Emotional</div>
-    <div class="tile"><div class="pct">${pIntellectual}%</div>Intellectual</div>
-  `;
-  out.style.display='grid';
-
-  // fade‑in by adding hint class
-  document.querySelectorAll('.card').forEach(c=>c.classList.add('hint'));
+  const birth=document.getElementById('birth').value;
+  const range=document.getElementById('range').value||90;
+  document.getElementById('result').textContent='Submitted birth='+birth+' range='+range;
 });
 </script>
-
-<!-- Fallback for users without JavaScript -->
-<noscript>
-  <div style="background:#fff;border:1px solid #ddd;padding:1rem;
-      max-width:600px;margin:2rem auto;font-family:sans-serif;">
-    <strong>JavaScript is disabled.</strong> This calculator needs JavaScript to compute the cycles and show the result tiles. Please enable JavaScript for the full experience.
-  </div>
-</noscript>
-
 </body>
 </html>
