@@ -136,7 +136,7 @@ footer{margin-top:3rem;color:var(--muted);font-size:.9rem;text-align:center;}
       <button type="submit" class="calc-btn">Go</button>
     </form>
 
-    <div class="result-tiles" id="result" style="margin-top:1.5rem;display:none;">
+    <div class="result-tiles" id="result" style="margin-top:1.5rem;">
       <!-- tiles filled by JS -->
     </div>
 
@@ -295,5 +295,11 @@ document.body.classList.add('loaded');
 </script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
 <button id="shareBtn" class="calc-btn" style="margin-top:1rem;display:none;">Share on Twitter</button>
+<!-- Fallback for users without JavaScript -->
+<noscript>
+  <div style="background:#fff; border:1px solid #ddd; padding:1rem; max-width:600px; margin:2rem auto; font-family:sans-serif;">
+    <strong>JavaScript is disabled.</strong> This biorhythm calculator requires JavaScript to compute cycles and display the chart. Please enable JavaScript in your browser for the full experience.
+  </div>
+</noscript>
 </body>
 </html>
