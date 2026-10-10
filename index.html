@@ -11,6 +11,9 @@
   --fg:#111;
   --card:#fff;
   --border:#ddd;
+  --accent:#d64045;
+  --primary:#2a9d8f;
+  --secondary:#ffe66d;
   --bg-dark:#2c3e50;
   --fg-dark:#ecf0f1;
   --card-dark:#34495e;
@@ -20,19 +23,36 @@
   html.dark body{background:var(--bg-dark);color:var(--fg-dark);}
   html.dark .card{background:var(--card-dark);border-color:var(--border-dark);}
   html.dark input{color:#111;}
-  .ver{font-size:10px;color:#ff0000;margin-top:30px;border:1px solid red;padding:5px;}
-  .card{background:#fff;padding:20px;border:1px solid #ddd;border-radius:8px}
-  button.moon{background:none;border:none;font-size:20px;cursor:pointer;position:absolute;top:10px;right:10px;}
+  .ver{font-size:10px;color:#999;margin-top:30px;}
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:20px;
+    box-shadow:0 2px 4px rgba(0,0,0,.1);
+    transition:transform .2s, box-shadow .2s;
+  }
+  .card:hover{transform:translateY(-2px);box-shadow:0 6px 12px rgba(0,0,0,.15);}
+  .card[data-loaded="true"]{animation:cardIn .5s ease forwards;}
+  @keyframes cardIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+  .calc-form label{font-weight:600;color:#555;}
+  .calc-form input{padding:.6rem;border:2px solid #dfe6e9;border-radius:8px;background:#fff;}
+  button{padding:.6rem 1rem;margin-top:1rem;border:none;border-radius:.5rem;font-weight:600;cursor:pointer;transition:transform .2s,box-shadow .2s;}
+  button.go{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;}
+  button.go:hover{transform:translateY(-2px);box-shadow:0 0 12px rgba(42,157,143,.4);}
+  button.go:active{transform:translateY(1px);}
+  button.moon{background:none;border:none;font-size:20px;cursor:pointer;position:absolute;top:10px;right:10px;color:var(--muted);}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
 </style>
 </head>
 <body>
 <h1>Biorhythm</h1>
 <button class="moon" aria-label="Toggle dark mode">🌙</button>
 <div class="card">
-<form id="bform">
+<form class="calc-form" id="bform">
 <label>Birth date: <input type="date" id="birth" required></label><br><br>
 <label>Days to show: <input type="number" id="range" min="1" value="90"></label><br><br>
-<button type="submit">Go</button>
+<button type="submit" class="go">Go</button>
 </form>
 <p id="result"></p>
 </div>
@@ -59,6 +79,13 @@ document.getElementById('bform').addEventListener('submit',function(e){
   const emo=pct(offset/28);
   const intel=pct(offset/33);
   document.getElementById('result').textContent='Physical '+phys+'% Emotional '+emo+'% Intellectual '+intel+'%';
+});
+</script>
+<script>
+/* entrance: animate the card once the page is parsed */
+document.addEventListener('DOMContentLoaded', () => {
+  const card = document.querySelector('.card');
+  if (card) card.setAttribute('data-loaded', 'true');
 });
 </script>
 </body>
