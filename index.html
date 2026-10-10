@@ -19,8 +19,9 @@
   --card-dark:#34495e;
   --border-dark:#3a5b6e;
 }
-  body{font-family:sans-serif;margin:2rem;background:var(--bg);color:var(--fg);padding:10px;box-sizing:border-box;transition:background .3s,color .3s;}
-  html.dark body{background:var(--bg-dark);color:var(--fg-dark);}
+    body{font-family:sans-serif;margin:2rem;background:var(--bg);color:var(--fg);padding:10px;box-sizing:border-box;background:linear-gradient(-45deg,var(--bg),#eef5ff,var(--bg));background-size:600% 600%;animation:bgShift 16s ease infinite;transition:background .3s,color .3s;}
+  @keyframes bgShift{0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
+  html.dark body{background:linear-gradient(-45deg,var(--bg-dark),#1e2b3a,var(--bg-dark));color:var(--fg-dark);}
   html.dark .card{background:var(--card-dark);border-color:var(--border-dark);}
   html.dark input{color:#111;}
   .ver{font-size:10px;color:#999;margin-top:30px;}
