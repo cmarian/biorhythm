@@ -86,8 +86,6 @@ header{text-align:center;margin-bottom:3rem;}
 }
 .tile .pct{font-size:1.4rem;font-weight:600;color:var(--accent);}
 .tile .name{font-size:.85rem;color:#777;margin-top:.1rem;}
-/* ---- Chart canvas ---- */
-#biorhythmChart{max-width:100%;height:auto;margin-top:1rem;}
 /* ---- Footer ---- */
 footer{margin-top:3rem;color:var(--muted);font-size:.9rem;text-align:center;}
 /* ---- Reduced motion ---- */
@@ -140,7 +138,6 @@ footer{margin-top:3rem;color:var(--muted);font-size:.9rem;text-align:center;}
       <!-- tiles filled by JS -->
     </div>
 
-    <canvas id="biorhythmChart" aria-label="Biorhythm cycles chart"></canvas>
   </section>
 </main>
 
@@ -182,69 +179,6 @@ function cyclePct(value) {
 }
 
 /* ====  CHART.JS RENDERER ==== */
-function renderChart(data) {
-  const ctx = document.getElementById('biorhythmChart').getContext('2d');
-  const days = data.map(d => d.day);
-  const phys = data.map(d => d.physical);
-  const emo = data.map(d => d.emotional);
-  const intel = data.map(d => d.intellectual);
-
-  const min = Math.min(...phys, emo, intel) - 0.2;
-  const max = Math.max(...phys, emo, intel) + 0.2;
-
-  if (window.biorhythmChart) {
-    window.biorhythmChart.destroy();
-  }
-  window.biorhythmChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: days,
-      datasets: [
-        {
-          label: 'Physical (23 d)',
-          data: phys,
-          borderColor: '#d64045',
-          backgroundColor: 'rgba(214,64,69,0.15)',
-          tension: 0.3,
-          fill: true
-        },
-        {
-          label: 'Emotional (28 d)',
-          data: emo,
-          borderColor: '#ffe66d',
-          backgroundColor: 'rgba(255,230,109,0.15)',
-          tension: 0.3,
-          fill: true
-        },
-        {
-          label: 'Intellectual (33 d)',
-          data: intel,
-          borderColor: '#2a9d8f',
-          backgroundColor: 'rgba(42,157,143,0.15)',
-          tension: 0.3,
-          fill: true
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      hover: { mode: 'index' },
-      scales: {
-        y: { min, max, display: true, title: { display: true, text: 'Value' }, ticks: { stepSize: 0.2 } },
-        x: { title: { display: true, text: 'Days relative to today' } }
-      },
-      plugins: {
-        title: {
-          display: true,
-          text: 'Biorhythm Cycles',
-          font: { size: 16 }
-        }
-      }
-    }
-  });
-}
-
 /* ====  UI HANDLER – form submit ==== */
 document.getElementById('biorhythm-form').addEventListener('submit', e => {
   e.preventDefault();
@@ -278,7 +212,6 @@ document.getElementById('biorhythm-form').addEventListener('submit', e => {
   out.style.display = 'grid';
 
   /* Draw the chart */
-  renderChart(cycles);
 });
 // Theme toggle
 const themeToggle = document.getElementById('themeToggle');
@@ -293,7 +226,6 @@ if (themeToggle) {
 }
 document.body.classList.add('loaded');
 </script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
 <button id="shareBtn" class="calc-btn" style="margin-top:1rem;display:none;">Share on Twitter</button>
 <!-- Fallback for users without JavaScript -->
 <noscript>
