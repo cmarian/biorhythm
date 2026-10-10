@@ -55,6 +55,7 @@
 <button type="submit" class="go">Go</button>
 </form>
 <p id="result"></p>
+<p><button id="share" class="go" style="display:none;">🔗 Share my result</button></p>
 </div>
 <p class="ver">PAGE VER 2025-10-14 - live</p>
 <script>
@@ -78,7 +79,16 @@ document.getElementById('bform').addEventListener('submit',function(e){
   const phys=pct(offset/23);
   const emo=pct(offset/28);
   const intel=pct(offset/33);
-  document.getElementById('result').textContent='Physical '+phys+'% Emotional '+emo+'% Intellectual '+intel+'%';
+    document.getElementById('result').textContent='Physical '+phys+'% Emotional '+emo+'% Intellectual '+intel+'%';
+  const shareBtn=document.getElementById('share');
+  if(shareBtn){
+    shareBtn.style.display='inline-block';
+    shareBtn.onclick=()=>{
+      const txt='My biorhythm – Physical '+phys+'% Emotional '+emo+'% Intellectual '+intel+'% #biorhythm';
+      const url=window.location.href;
+      window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(txt)+'&url='+encodeURIComponent(url),'_blank');
+    };
+  }
 });
 </script>
 <script>
