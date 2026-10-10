@@ -2,318 +2,274 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Biorhythm</title>
-
-<!--  Google font (soft, rounded)  -->
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap"
-      rel="stylesheet">
-
-<!--  Chart.js (for the sine‑wave graph)  -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
-
-<!--  Inline styles & script – keep everything in one file  -->
+<title>Biorhythm — History & Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root{
-    /*  Pastel palette – easy on the eyes  */
-    --bg-start:#fdfdfe;
-    --bg-end:#e0e7ff;
-    --card-bg:rgba(255,255,255,.85);
-    --text:#2c3e50;
-    --primary:#7eccab;      /* teal‑green accent */
-    --secondary:#ff6b6b;    /* gentle coral */
-    --accent:#ffe66d;       /* soft sunshine yellow */
-  }
+/* ---- Root variables & base reset ---- */
+:root{
+  --bg:#fdfdfd;
+  --fg:#111;
+  --muted:#666;
+  --accent:#d64045;
+  --soft:#ffe66d;
+  --card:#ffffff;
+  --border:#e0e0e0;
+  --primary:#2a9d8f;
+  --secondary:#ffe66d;
+}
+* {box-sizing:border-box;margin:0;padding:0;font-family:'Montserrat',sans-serif;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--fg);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:2rem;
+}
+h1{font-family:'Playfair Display',serif;font-size:2.8rem;margin-bottom:.5rem;}
+h2{font-family:'Playfair Display',serif;font-size:1.8rem;margin:2rem 0 1rem;}
+p{max-width:720px;margin:0 0 1.5rem;line-height:1.6;}
+a{color:var(--accent);text-decoration:underline;}
+a:hover{color:#c83338;}
+/* ---- Header ---- */
+header{text-align:center;margin-bottom:3rem;}
+/* ---- Main content ---- */
+.main{max-width:960px;width:100%;}
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:2rem 2.5rem;
+  margin-bottom:2rem;
+  box-shadow:0 8px 24px rgba(0,0,0,.08);
+}
+.card h3{margin-top:0;}
+/* ---- History list ---- */
+.history-list{margin:1rem 0 1rem 1.5rem;}
+.history-list li{margin-bottom:.4rem;}
 
-  body{
-    margin:0;
-    font-family:'Montserrat',sans-serif;
-    background:linear-gradient(135deg,var(--bg-start),var(--bg-end));
-    color:var(--text);
-    min-height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-  }
-
-  /*  Card – no overflow that clips the date‑picker  */
-  .card{
-    width:92%;
-    max-width:620px;
-    background:var(--card-bg);
-    padding:2.5rem 2rem;
-    border-radius:20px;
-    box-shadow:0 20px 40px rgba(0,0,0,.1);
-    position:relative;
-    overflow:visible;               /*  let the date‑dropdown breathe  */
-  }
-
-  /*  Faint coloured overlay – keeps the “artistic” feel  */
-  .card::before{
-    content:'';
-    position:absolute;
-    inset:0;
-    background:linear-gradient(135deg,var(--primary),var(--secondary));
-    opacity:.07;
-    border-radius:20px;
-  }
-
-  .card-header{
-    text-align:center;margin-bottom:1.5rem;
-  }
-  .card-header h1{
-    margin:0;font-size:1.8rem;color:var(--primary);
-  }
-  .card-header .sub{
-    font-size:.9rem;color:#666;margin-top:.3rem;
-  }
-
-  /*  ====  FORM ====  */
-  .form-row{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap .8rem;margin-bottom:.8rem;
-  }
-  .form-group label{
-    display:block;margin-bottom:.3rem;font-weight:600;color:#555;
-  }
-  .form-group input{
-    width:100%;padding:.6rem .8rem;border:2px solid #dfe6e9;
-    border-radius:10px;background:#fafafa;color:var(--text);
-    font-family:'Montserrat',sans-serif;font-size:1rem;outline:none;
-    appearance:none;                 /*  strip default arrow, we keep the calendar via type="date"  */
-    z-index:2;                       /*  above the card’s pseudo‑element  */
-  }
-  .form-group input:focus{
-    border-color:var(--primary);
-    background:#f4faff;
-  }
-
-  /*  ====  CALCULATE BUTTON ====  */
-  .calc-btn{
-    width:100%;padding:.8rem;margin-top:.4rem;
-    background:linear-gradient(135deg,var(--primary),var(--secondary));
-    color:#fff;border:none;border-radius:10px;
-    font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:600;
-    letter-spacing:1px;cursor:pointer;transition:transform .2s,box-shadow .2s;
-  }
-  .calc-btn:hover{
-    transform:translateY(-2px);
-    box-shadow:0 0 20px rgba(126,204,171,.4);
-  }
-  .calc-btn:active{transform:translateY(1px);}
-
-  /*  ====  RESULT TILES ====  */
-  .result-tiles{
-    margin-top:1.5rem;display:grid;grid-template-columns:1fr 1fr 1fr;
-    gap .5rem;}
-  .tile{
-    background:rgba(255,255,255,.7);
-    border-radius:12px;padding:.8rem 0.6rem;
-    text-align:center;min-height:80px;display:flex;
-    flex-direction:column;justify-content:center;}
-  .tile i{font-size:2rem;margin-bottom:.3rem;}
-  .tile .pct{font-size:1.4rem;font-weight:600;color:var(--primary);}
-  .tile .name{font-size:.85rem;color:#777;margin-top:.1rem;}
-
-  /*  Chart canvas  */
-  .chart-wrapper{margin-top:2rem;position:relative;}
-  canvas{display:block;margin:0 auto;}
-
-  /*  Accessibility – reduce motion  */
-  @media (prefers-reduced-motion:reduce){
-    *{animation-duration:.01ms!important;transition-duration:.01ms!important;}
-  }
+/* ---- Calculator form ---- */
+.calc-form{display:grid;gap:1rem;margin-bottom:1.5rem;}
+.calc-form .form-row{display:grid;grid-template-columns:1fr 1fr;gap .8rem;}
+.calc-form label{display:block;margin-bottom:.3rem;font-weight:600;color:#555;}
+.calc-form input{
+  width:100%;padding:.6rem .8rem;border:2px solid #dfe6e9;border-radius:10px;background:#fafafa;color:var(--text);font-family:'Montserrat',sans-serif;font-size:1rem;outline:none;appearance:none;
+}
+.calc-form input:focus{border-color:var(--primary);background:#f4faff;}
+/* ---- Button ---- */
+.calc-btn{
+  width:100%;padding:.8rem;margin-top:.4rem;
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  color:#fff;border:none;border-radius:10px;font-family:'Montserrat',sans-serif;font-size:1rem;font-weight:600;letter-spacing:1px;cursor:pointer;transition:transform .2s,box-shadow .2s;
+}
+.calc-btn:hover{transform:translateY(-2px);box-shadow:0 0 20px rgba(42,157,143,.4);}
+.calc-btn:active{transform:translateY(1px);}
+/* ---- Result tiles ---- */
+.result-tiles{margin-top:1.5rem;display:grid;grid-template-columns:1fr 1fr 1fr;gap .5rem;}
+.tile{
+  background:rgba(255,255,255,.7);
+  border-radius:12px;padding:.8rem 0.6rem;
+  text-align:center;min-height:80px;display:flex;flex-direction:column;justify-content:center;
+}
+.tile .pct{font-size:1.4rem;font-weight:600;color:var(--accent);}
+.tile .name{font-size:.85rem;color:#777;margin-top:.1rem;}
+/* ---- Chart canvas ---- */
+#biorhythmChart{max-width:100%;height:auto;margin-top:1rem;}
+/* ---- Footer ---- */
+footer{margin-top:3rem;color:var(--muted);font-size:.9rem;text-align:center;}
+/* ---- Reduced motion ---- */
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
 </style>
 </head>
 <body>
+<header>
+  <h1>Biorhythm</h1>
+  <p>Explore the history and calculate your personal cycles</p>
+</header>
 
-  <main class="card">
-    <header class="card-header">
-      <h1><i class="fas fa‑gem"></i> Biorhythm</h1>
-      <p class="sub">Physical • Emotional • Intellectual</p>
-    </header>
+<main class="main">
+  <!-- History section -->
+  <section class="card" id="historySection">
+    <h2>History of Biorhythm Theory</h2>
+    <p>The biorhythm theory originated in the late 19th century, proposing that human life is governed by innate biological cycles that begin at birth. Though later considered pseudoscience, it remains a popular tool for personal reflection.</p>
+    <p><strong>Key milestones:</strong></p>
+    <ul class="history-list">
+      <li><strong>1897:</strong> Austrian physician <strong>Wilhelm Fliess</strong> proposes the 23‑day, 28‑day, and 33‑day cycles.</li>
+      <li><strong>Early 1900s:</strong> The idea spreads through magazines, novels, and public fascination.</li>
+      <li><strong>1970s–1990s:</strong> Peaks in self‑help and sports performance, later debunked by scientific studies.</li>
+      <li><strong>Today:</strong> Used mainly for introspection, curiosity, and occasional novelty.</li>
+    </ul>
+    <p>While <em>scientific evidence does not support</em> biorhythms as predictive, many people enjoy exploring the patterns as a form of personal insight.</p>
+  </section>
 
-    <section class="card-body">
-      <form id="biorhythm-form">
-        <div class="form-row">
-          <div class="form-group">
-            <label for="birthdate"><i class="fas fa‑calendar‑alt"></i> Birth date</label>
-            <!--  Native date picker – works with mouse & keyboard  -->
-            <input type="date"
-                   id="birthdate"
-                   required
-                   style="
-                     width:100%;
-                     padding:.6rem .8rem;
-                     border:2px solid #dfe6e9;
-                     border-radius:.5rem;
-                     background:#fafafa;
-                     color:#2c3e50;
-                     font-family:inherit;
-                     font-size:1rem;
-                     outline:none;
-                     z-index:1;
-                     appearance:none;
-                   ">
-          </div>
+  <!-- Calculator section -->
+  <section class="card" id="calcSection">
+    <h2>Calculate Your Cycles</h2>
+    <p>Enter your birthdate and a range of days to see your physical, emotional, and intellectual cycles graphed across time.</p>
 
-          <div class="form-group">
-            <label for="range"><i class="fas fa‑slider"></i> Days to show</label>
-            <input type="number"
-                   id="range"
-                   min="1"
-                   value="90"
-                   style="
-                     width:100%;
-                     padding:.6rem .8rem;
-                     border:2px solid #dfe6e9;
-                     border-radius:.5rem;
-                     background:#fafafa;
-                     color:#2c3e50;
-                     font-family:inherit;
-                     font-size:1rem;
-                     outline:none;
-                     appearance:none;
-                   ">
-          </div>
+    <form class="calc-form" id="biorhythm-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="birthdate">Birth date</label>
+          <input type="date" id="birthdate" name="birthdate" required>
         </div>
+        <div class="form-group">
+          <label for="range">Days to show</label>
+          <input type="number" id="range" name="range" min="1" value="90">
+        </div>
+      </div>
+      <button type="submit" class="calc-btn">Go</button>
+    </form>
 
-        <button type="submit" class="calc-btn"><i class="fas fa‑calculate"></i> GO</button>
-      </form>
-    </section>
+    <div class="result-tiles" id="result" style="margin-top:1.5rem;display:none;">
+      <!-- tiles filled by JS -->
+    </div>
 
-    <!--  Result tiles (appear after “GO”)  -->
-    <div id="result" class="result-tiles"></div>
+    <canvas id="biorhythmChart" aria-label="Biorhythm cycles chart"></canvas>
+  </section>
+</main>
 
-    <!--  Chart canvas – the “star” of the page  -->
-    <section class="chart-wrapper">
-      <canvas id="biorhythmChart"></canvas>
-    </section>
-  </main>
+<footer>
+  &copy; 2026 Biorhythm • For entertainment and reflection only
+</footer>
 
-  <script>
-    /*  ====  Biorhythm CALCULATION  ==== */
-    function sinCycle(days, period){
-      return Math.sin((2*Math.PI*days)/period);
-    }
-    function daysSinceBirth(birthDate){
-      const today=new Date();
-      const birth=new Date(birthDate);
-      const diff=Math.abs(today-birth);
-      return Math.floor(diff/(1000*60*60*24));
-    }
-    function computeCycles(birthDate,rangeDays){
-      const offset=daysSinceBirth(birthDate);
-      const data=[];
-      for(let i=-rangeDays;i<=rangeDays;i++){
-        const day=offset+i;
-        data.push({
-          day,
-          physical:sinCycle(day,23),
-          emotional:sinCycle(day,28),
-          intellectual:sinCycle(day,33)
-        });
-      }
-      return data;
-    }
-    function pct(value){                // map sine (‑1…+1) → 0‑100 %
-      return Math.round(((value+1)/2)*100);
-    }
+<script>
+/* ====  Biorhythm CALCULATION ==== */
+function sinCycle(days, period) {
+  return Math.sin((2 * Math.PI * days) / period);
+}
 
-    /*  ====  CHART.JS RENDERER  ==== */
-    function renderChart(data){
-      const ctx=document.getElementById('biorhythmChart').getContext('2d');
-      const days=data.map(d=>d.day);
-      const phys=data.map(d=>d.physical);
-      const emo =data.map(d=>d.emotional);
-      const intel=data.map(d=>d.intellectual);
+function daysSinceBirth(birthDate) {
+  const today = new Date();
+  const birth = new Date(birthDate);
+  const diffMs = Math.abs(today - birth);
+  return Math.floor(diffMs / (1000 * 60 * 60 * 24));
+}
 
-      const min=Math.min(...phys,emo,intel)-0.2;
-      const max=Math.max(...phys,emo,intel)+0.2;
-
-      new Chart(ctx,{
-        type:'line',
-        data:{
-          labels:days,
-          datasets:[
-            {
-              label:'Physical (23 d)',
-              data:phys,
-              borderColor:'#7eccab',
-              backgroundColor:'rgba(126,204,171,0.15)',
-              tension:0.3,
-              fill:true
-            },
-            {
-              label:'Emotional (28 d)',
-              data:emo,
-              borderColor:'#ff6b6b',
-              backgroundColor:'rgba(251,107,107,0.15)',
-              tension:0.3,
-              fill:true
-            },
-            {
-              label:'Intellectual (33 d)',
-              data:intel,
-              borderColor:'#ffe66d',
-              backgroundColor:'rgba(255,230,109,0.15)',
-              tension:0.3,
-              fill:true
-            }
-          ]
-        },
-        options:{
-          responsive:true,
-          maintainAspectRatio:false,
-          hover:{mode:'index'},
-          scales:{
-            y:{min,max,display:true,
-               title:{display:true,text:'Value'},
-               ticks:{stepSize:0.2}},
-            x:{title:{display:true,text:'Days relative to today'}}
-          },
-          plugins:{
-            title:{
-              display:true,
-              text:'Biorhythm Cycles',
-              font:{size:16}}
-          }
-        }
-      });
-    }
-
-    /*  ====  UI HANDLER – form submit  ==== */
-    document.getElementById('biorhythm-form').addEventListener('submit',e=>{
-      e.preventDefault();
-
-      const birth=document.getElementById('birthdate').value.trim();
-      const range=parseInt(document.getElementById('range').value,10)||90;
-
-      if(!birth||!/^\d{4}-\d{2}-\d{2}$/.test(birth)){
-        alert('Enter a valid date in YYYY‑MM‑DD format.');
-        return;
-      }
-      if(range<1){
-        alert('Days to show must be at least 1.');
-        return;
-      }
-
-      const cycles=computeCycles(birth,range);
-
-      // “today” is the row where day===0
-      const today=cycles.find(d=>d.day===0)||cycles[0];
-
-      // ----  Fill the three tiles  ----
-      const out=document.getElementById('result');
-      out.innerHTML=`
-        <div class="tile"><div class="pct">${pct(today.physical)}%</div>Physical</div>
-        <div class="tile"><div class="pct">${pct(today.emotional)}%</div>Emotional</div>
-        <div class="tile"><div class="pct">${pct(today.intellectual)}%</div>Intellectual</div>
-      `;
-
-      // ----  Draw the sine‑wave chart  ----
-      renderChart(cycles);
+function computeCycles(birthDate, rangeDays) {
+  const todayOffset = daysSinceBirth(birthDate);
+  const data = [];
+  for (let i = -rangeDays; i <= rangeDays; i++) {
+    const day = todayOffset + i;
+    data.push({
+      day,
+      physical: sinCycle(day, 23),
+      emotional: sinCycle(day, 28),
+      intellectual: sinCycle(day, 33)
     });
-  </script>
+  }
+  return data;
+}
+
+/* Map sine value (‑1…+1) → 0‑100 % */
+function cyclePct(value) {
+  return Math.round(((value + 1) / 2) * 100);
+}
+
+/* ====  CHART.JS RENDERER ==== */
+function renderChart(data) {
+  const ctx = document.getElementById('biorhythmChart').getContext('2d');
+  const days = data.map(d => d.day);
+  const phys = data.map(d => d.physical);
+  const emo = data.map(d => d.emotional);
+  const intel = data.map(d => d.intellectual);
+
+  const min = Math.min(...phys, emo, intel) - 0.2;
+  const max = Math.max(...phys, emo, intel) + 0.2;
+
+  if (window.biorhythmChart) {
+    window.biorhythmChart.destroy();
+  }
+  window.biorhythmChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: days,
+      datasets: [
+        {
+          label: 'Physical (23 d)',
+          data: phys,
+          borderColor: '#d64045',
+          backgroundColor: 'rgba(214,64,69,0.15)',
+          tension: 0.3,
+          fill: true
+        },
+        {
+          label: 'Emotional (28 d)',
+          data: emo,
+          borderColor: '#ffe66d',
+          backgroundColor: 'rgba(255,230,109,0.15)',
+          tension: 0.3,
+          fill: true
+        },
+        {
+          label: 'Intellectual (33 d)',
+          data: intel,
+          borderColor: '#2a9d8f',
+          backgroundColor: 'rgba(42,157,143,0.15)',
+          tension: 0.3,
+          fill: true
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      hover: { mode: 'index' },
+      scales: {
+        y: { min, max, display: true, title: { display: true, text: 'Value' }, ticks: { stepSize: 0.2 } },
+        x: { title: { display: true, text: 'Days relative to today' } }
+      },
+      plugins: {
+        title: {
+          display: true,
+          text: 'Biorhythm Cycles',
+          font: { size: 16 }
+        }
+      }
+    }
+  });
+}
+
+/* ====  UI HANDLER – form submit ==== */
+document.getElementById('biorhythm-form').addEventListener('submit', e => {
+  e.preventDefault();
+
+  const birth = document.getElementById('birthdate').value.trim();
+  const range = parseInt(document.getElementById('range').value, 10) || 90;
+
+  if (!birth || !/^\d{4}-\d{2}-\d{2}$/.test(birth)) {
+    alert('Enter a valid date in YYYY‑MM‑DD format.');
+    return;
+  }
+  if (range < 1) {
+    alert('Days to show must be at least 1.');
+    return;
+  }
+
+  const cycles = computeCycles(birth, range);
+  const today = cycles.find(d => d.day === 0) || cycles[0];
+
+  /* Fill the three tiles */
+  const pctPhysical    = cyclePct(today.physical);
+  const pctEmotional   = cyclePct(today.emotional);
+  const pctIntellectual= cyclePct(today.intellectual);
+
+  const out = document.getElementById('result');
+  out.innerHTML = `
+    <div class="tile"><div class="pct">${pctPhysical}%</div>Physical</div>
+    <div class="tile"><div class="pct">${pctEmotional}%</div>Emotional</div>
+    <div class="tile"><div class="pct">${pctIntellectual}%</div>Intellectual</div>
+  `;
+  out.style.display = 'grid';
+
+  /* Draw the chart */
+  renderChart(cycles);
+});
+</script>
 </body>
 </html>
