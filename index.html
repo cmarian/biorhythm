@@ -18,6 +18,10 @@
   --border:#e0e0e0;
   --primary:#2a9d8f;
   --secondary:#ffe66d;
+  --bg-dark:#2c3e50;
+  --fg-dark:#ecf0f1;
+  --card-dark:#34495e;
+  --border-dark:#2c3e50;
 }
 * {box-sizing:border-box;margin:0;padding:0;font-family:'Montserrat',sans-serif;}
 html{scroll-behavior:smooth;}
@@ -30,7 +34,9 @@ body{
   align-items:center;
   justify-content:center;
   padding:2rem;
+  transition:background .3s, color .3s;
 }
+html.dark{--bg:#2c3e50;--fg:#ecf0f1;--muted:#bdc3c7;--accent:#ff7b5b;--soft:#f5b64e;--card:#34495e;--border:#2c3e50;--primary:#1abc9c;--secondary:#f5b64e;}
 h1{font-family:'Playfair Display',serif;font-size:2.8rem;margin-bottom:.5rem;}
 h2{font-family:'Playfair Display',serif;font-size:1.8rem;margin:2rem 0 1rem;}
 p{max-width:720px;margin:0 0 1.5rem;line-height:1.6;}
@@ -92,6 +98,7 @@ footer{margin-top:3rem;color:var(--muted);font-size:.9rem;text-align:center;}
 <header>
   <h1>Biorhythm</h1>
   <p>Explore the history and calculate your personal cycles</p>
+  <button id="themeToggle" aria-label="Toggle dark mode" style="background:none;border:none;color:var(--muted);font-size:1rem;cursor:pointer;position:absolute;top:1rem;right:1rem;">🌙</button>
 </header>
 
 <main class="main">
@@ -272,8 +279,18 @@ document.getElementById('biorhythm-form').addEventListener('submit', e => {
   /* Draw the chart */
   renderChart(cycles);
 });
+// Theme toggle
+const themeToggle = document.getElementById('themeToggle');
+if (themeToggle) {
+  const html = document.documentElement;
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if (prefersDark) html.classList.add('dark');
+  themeToggle.addEventListener('click', () => {
+    html.classList.toggle('dark');
+    localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+  });
+}
+document.body.classList.add('loaded');
 </script>
-</body>
-<script>document.body.classList.add('loaded');</script>
 </body>
 </html>
